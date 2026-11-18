@@ -3,256 +3,358 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI Quiz Arena</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Quiz Arena | Think Smart. Play Smart.</title>
 <style>
-* { box-sizing: border-box; }
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg:#080b18;
+  --panel:#11182b;
+  --purple:#a855f7;
+  --cyan:#22d3ee;
+  --white:#f4f6ff;
+  --muted:#9aa6c4;
+  --green:#4ade80;
+  --red:#fb7185;
+}
+* {box-sizing:border-box;margin:0;padding:0}
 body {
-  margin: 0; min-height: 100vh; padding: 24px 14px;
-  display: grid; place-items: center;
-  font: 16px Arial, sans-serif; color: #f5f3ff;
-  background: radial-gradient(ellipse at top, #25235d, #090b19 70%);
+  font-family:Poppins,sans-serif;
+  background:radial-gradient(ellipse at 15% 10%,#211346 0%,transparent 40%),
+             radial-gradient(ellipse at 85% 80%,#07354b 0%,transparent 38%),var(--bg);
+  color:var(--white);
+  min-height:100vh;
+  overflow-x:hidden;
 }
-main { width: 100%; max-width: 700px; }
-header { text-align: center; margin-bottom: 24px; }
-.logo { font-size: clamp(26px, 6vw, 42px); font-weight: 900; color: #70f7ff; }
-header p { color: #bdc4e8; }
-.panel {
-  background: #14182e; border: 1px solid #55558c;
-  border-radius: 20px; padding: clamp(20px, 5vw, 32px);
+body:before {
+  content:"";position:fixed;inset:0;pointer-events:none;opacity:.15;
+  background-image:linear-gradient(#ffffff12 1px,transparent 1px),
+  linear-gradient(90deg,#ffffff12 1px,transparent 1px);
+  background-size:40px 40px;
 }
-.hidden { display: none !important; }
-.tag { color: #70f7ff; font-size: 12px; letter-spacing: 2px; }
-h2 { line-height: 1.35; }
-p { line-height: 1.6; color: #c9cde4; }
-button, select { font: inherit; }
-button { cursor: pointer; }
+button {font-family:inherit;cursor:pointer}
+.container {width:min(1050px,92%);margin:auto;position:relative;z-index:1}
+header {padding:25px 0;display:flex;align-items:center;justify-content:space-between}
+.logo {font-family:Orbitron,sans-serif;font-weight:800;font-size:21px;letter-spacing:1px}
+.logo span {color:var(--cyan)}
+.tag {font-size:11px;color:var(--muted);border:1px solid #ffffff25;padding:8px 13px;border-radius:30px}
+.screen {display:none;animation:appear .45s ease}
+.screen.active {display:block}
+@keyframes appear {from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+.hero {text-align:center;padding:65px 10px 35px}
+.robot {font-size:75px;filter:drop-shadow(0 0 25px #a855f7);margin-bottom:20px;animation:float 3s ease-in-out infinite}
+@keyframes float {50%{transform:translateY(-12px)}}
+.eyebrow {color:var(--cyan);font-size:12px;letter-spacing:4px;font-weight:700;margin-bottom:17px}
+h1 {font-family:Orbitron,sans-serif;font-size:clamp(34px,7vw,65px);line-height:1.2}
+.gradient {background:linear-gradient(90deg,var(--purple),var(--cyan));background-clip:text;color:transparent}
+.subtitle {color:var(--muted);margin:18px auto;max-width:570px;line-height:1.8;font-size:14px}
 .primary {
-  border: 0; border-radius: 12px; padding: 14px;
-  background: linear-gradient(100deg, #70f7ff, #b7a0ff);
-  color: #090b19; font-weight: 800;
+  border:0;border-radius:12px;padding:15px 28px;color:#080b18;font-weight:800;
+  background:linear-gradient(100deg,var(--cyan),#a78bfa);
+  box-shadow:0 0 25px #22d3ee30;transition:.25s;font-size:14px
 }
-.primary:hover { filter: brightness(1.12); transform: translateY(-1px); }
-.full { width: 100%; margin-top: 18px; }
-select {
-  width: 100%; padding: 13px; margin-top: 10px;
-  border: 1px solid #55558c; border-radius: 10px;
-  background: #202541; color: white;
+.primary:hover {transform:translateY(-3px);box-shadow:0 0 35px #22d3ee65}
+.features {display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin:35px 0 55px}
+.feature,.grade,.quiz-card,.result-card {
+  background:linear-gradient(145deg,#151d34dd,#101629ee);
+  border:1px solid #ffffff17;border-radius:18px;
+  box-shadow:0 10px 35px #0003;
 }
-.stats { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 14px; font-size: 14px; }
-.track { height: 7px; background: #292d4b; border-radius: 9px; overflow: hidden; }
-#progress { height: 100%; width: 0; background: #70f7ff; transition: width .2s; }
-#question { margin: 22px 0; font-size: 23px; }
-.answers { display: grid; gap: 11px; }
-.answer {
-  text-align: left; padding: 15px; border-radius: 11px;
-  color: white; background: #202541; border: 1px solid #444a70;
+.feature {padding:20px;text-align:center}
+.feature b {display:block;font-size:14px;margin:8px}
+.feature p {font-size:11px;color:var(--muted)}
+.section-title {font-family:Orbitron,sans-serif;font-size:23px;text-align:center;margin:30px 0 10px}
+.section-desc {color:var(--muted);font-size:13px;text-align:center;margin-bottom:28px}
+.grades {display:grid;grid-template-columns:repeat(2,1fr);gap:17px;margin-bottom:60px}
+.grade {padding:24px;cursor:pointer;transition:.25s;position:relative;overflow:hidden}
+.grade:hover {transform:translateY(-5px);border-color:var(--cyan);box-shadow:0 0 25px #22d3ee20}
+.grade .emoji {font-size:34px}
+.grade h3 {margin:12px 0 5px;font-size:17px}
+.grade p {font-size:12px;color:var(--muted)}
+.grade .arrow {position:absolute;right:22px;top:25px;color:var(--cyan);font-size:22px}
+.pill {display:inline-block;margin-top:14px;padding:6px 10px;border-radius:20px;background:#a855f722;color:#d8b4fe;font-size:10px}
+.quiz-card {max-width:780px;margin:35px auto 60px;padding:clamp(20px,5vw,38px)}
+.quiz-top {display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;color:var(--muted)}
+.progress {height:7px;background:#ffffff12;border-radius:10px;margin:18px 0 28px;overflow:hidden}
+.progress-bar {height:100%;width:0;background:linear-gradient(90deg,var(--purple),var(--cyan));transition:width .35s}
+.question-label {color:var(--cyan);font-size:11px;letter-spacing:2px;font-weight:700}
+.question {font-size:clamp(18px,3vw,25px);line-height:1.55;margin:14px 0 25px;font-weight:600}
+.options {display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.option {
+  padding:16px;text-align:left;color:var(--white);font-size:13px;
+  background:#ffffff08;border:1px solid #ffffff20;border-radius:12px;
+  transition:.2s;min-height:65px;
 }
-.answer:hover:not(:disabled) { border-color: #70f7ff; }
-.answer:disabled { opacity: 1; }
-.answer.correct { border-color: #4ade80; background: #123c32; }
-.answer.wrong { border-color: #fb7185; background: #482333; }
-#feedback { min-height: 45px; }
-.result { text-align: center; }
-.result-icon { font-size: 65px; margin: 10px 0; }
-#finalScore { color: #70f7ff; font-size: 44px; font-weight: 900; }
-footer { text-align: center; margin-top: 18px; color: #858cac; font-size: 12px; }
+.option:hover:not(:disabled) {border-color:var(--cyan);background:#22d3ee12}
+.option.correct {border-color:var(--green);background:#4ade8018;color:#86efac}
+.option.wrong {border-color:var(--red);background:#fb718518;color:#fda4af}
+.option:disabled {cursor:default}
+.feedback {margin-top:18px;padding:15px;border-radius:12px;background:#ffffff09;font-size:12px;line-height:1.7;display:none}
+.feedback.show {display:block}
+.feedback.good {border-left:3px solid var(--green)}
+.feedback.bad {border-left:3px solid var(--red)}
+.quiz-actions {display:flex;justify-content:space-between;align-items:center;margin-top:24px;gap:10px}
+.small-btn {border:1px solid #ffffff25;background:#ffffff09;color:white;border-radius:10px;padding:11px 17px;font-size:12px}
+.small-btn:hover {border-color:var(--cyan)}
+.result-card {max-width:600px;margin:55px auto;padding:35px;text-align:center}
+.result-icon {font-size:65px;margin:15px}
+.score {font-family:Orbitron,sans-serif;font-size:65px;color:var(--cyan);margin:15px}
+.result-card p {color:var(--muted);font-size:13px;line-height:1.8;margin:10px}
+.result-actions {display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:25px}
+footer {text-align:center;padding:25px;color:#7d88a7;font-size:11px;border-top:1px solid #ffffff12}
+.confetti {position:fixed;top:-15px;width:9px;height:14px;z-index:10;pointer-events:none;animation:fall 3s linear forwards}
+@keyframes fall {to{transform:translateY(110vh) rotate(720deg);opacity:0}}
+@media(max-width:600px) {
+ header {padding:18px 0}.tag {font-size:9px}
+ .hero {padding-top:45px}
+ .features {gap:8px}.feature {padding:14px 6px}
+ .feature p {font-size:9px}
+ .grades {grid-template-columns:1fr}
+ .options {grid-template-columns:1fr}
+ .quiz-card {padding:19px}
+}
 </style>
 </head>
 <body>
-<main>
+<div class="container">
 <header>
-  <div class="logo">🤖 AI QUIZ ARENA</div>
-  <p>Think smart. Play smart. Discover AI!</p>
+  <div class="logo">AI <span>QUIZ</span> ARENA</div>
+  <div class="tag">⚡ THE ULTIMATE AI CHALLENGE</div>
 </header>
 
-<section class="panel" id="home">
-  <div class="tag">WELCOME, FUTURE INNOVATOR!</div>
-  <h2>Ready to challenge your brain?</h2>
-  <p>Choose your grade level and enter the AI challenge. Answer 10 questions and get at least 8 right to win!</p>
-  <label for="grade">Choose your level:</label>
-  <select id="grade">
-    <option value="0">Level 1 — Junior Explorers (Grades 1–4)</option>
-    <option value="1">Level 2 — AI Adventurers (Grades 5–7)</option>
-    <option value="2">Level 3 — Future Innovators (Grades 8–10)</option>
-    <option value="3">Level 4 — AI Masters (Grades 11–12)</option>
-  </select>
-  <button class="primary full" onclick="startQuiz()">START CHALLENGE 🚀</button>
-</section>
-
-<section class="panel hidden" id="game">
-  <div class="stats">
-    <span id="count"></span><span>⭐ Score: <b id="score">0</b></span>
+<!-- HOME -->
+<section id="home" class="screen active">
+  <div class="hero">
+    <div class="robot">🤖</div>
+    <div class="eyebrow">WELCOME TO THE FUTURE</div>
+    <h1>THINK SMART.<br><span class="gradient">PLAY SMART.</span></h1>
+    <p class="subtitle">Ready to challenge your brain? Explore Artificial Intelligence, solve exciting challenges and prove your skills in the ultimate AI quiz arena!</p>
+    <button class="primary" onclick="showScreen('levels')">ENTER THE ARENA &nbsp; →</button>
   </div>
-  <div class="track"><div id="progress"></div></div>
-  <p class="tag" id="category"></p>
-  <h2 id="question"></h2>
-  <div class="answers" id="answers"></div>
-  <p id="feedback" aria-live="polite"></p>
-  <button class="primary full hidden" id="next" onclick="nextQuestion()">NEXT →</button>
+  <div class="features">
+    <div class="feature"><div>🧠</div><b>Test Your Brain</b><p>Explore AI through smart challenges.</p></div>
+    <div class="feature"><div>⚡</div><b>Learn by Playing</b><p>Discover fascinating AI facts.</p></div>
+    <div class="feature"><div>🏆</div><b>Become a Champion</b><p>Score 8 or more to win!</p></div>
+  </div>
 </section>
 
-<section class="panel result hidden" id="result">
-  <div class="tag">CHALLENGE COMPLETE</div>
-  <div class="result-icon" id="resultIcon">🏆</div>
-  <h2 id="resultTitle"></h2>
-  <div id="finalScore"></div>
-  <p id="message"></p>
-  <button class="primary full" onclick="startQuiz()">🔄 TRY AGAIN</button>
-  <button class="primary full" onclick="goHome()">🏠 CHANGE LEVEL</button>
+<!-- LEVELS -->
+<section id="levels" class="screen">
+  <h2 class="section-title">SELECT YOUR <span class="gradient">LEVEL</span></h2>
+  <p class="section-desc">Choose your grade and begin your AI adventure.</p>
+  <div class="grades">
+    <div class="grade" onclick="startQuiz('junior')"><div class="emoji">🌱</div><div class="arrow">↗</div><h3>Grades 1 – 4</h3><p>AI explorers · Everyday technology · Fun puzzles</p><span class="pill">BEGINNER LEVEL</span></div>
+    <div class="grade" onclick="startQuiz('middle')"><div class="emoji">🚀</div><div class="arrow">↗</div><h3>Grades 5 – 7</h3><p>AI applications · Patterns · Smart thinking</p><span class="pill">INTERMEDIATE LEVEL</span></div>
+    <div class="grade" onclick="startQuiz('high')"><div class="emoji">⚙️</div><div class="arrow">↗</div><h3>Grades 8 – 10</h3><p>Machine learning · Ethics · Real-world AI</p><span class="pill">ADVANCED LEVEL</span></div>
+    <div class="grade" onclick="startQuiz('senior')"><div class="emoji">🧬</div><div class="arrow">↗</div><h3>Grades 11 – 12</h3><p>Neural networks · Data · AI reasoning</p><span class="pill">EXPERT LEVEL</span></div>
+  </div>
+  <div style="text-align:center;margin-bottom:40px"><button class="small-btn" onclick="showScreen('home')">← Back to Home</button></div>
 </section>
 
-<footer>BUILT FOR OUR SCHOOL AI EXHIBITION ✨</footer>
-</main>
+<!-- QUIZ -->
+<section id="quiz" class="screen">
+  <div class="quiz-card">
+    <div class="quiz-top">
+      <span id="levelName">AI CHALLENGE</span>
+      <span id="questionCount">QUESTION 1 / 10</span>
+    </div>
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="question-label">✦ THINK CAREFULLY</div>
+    <div class="question" id="questionText"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="quiz-actions">
+      <button class="small-btn" onclick="leaveQuiz()">✕ Exit</button>
+      <button class="primary" id="nextBtn" onclick="nextQuestion()" style="display:none">NEXT QUESTION →</button>
+    </div>
+  </div>
+</section>
+
+<!-- RESULT -->
+<section id="result" class="screen">
+  <div class="result-card">
+    <div class="eyebrow">CHALLENGE COMPLETED</div>
+    <div class="result-icon" id="resultIcon">🏆</div>
+    <h2 id="resultTitle" style="font-family:Orbitron,sans-serif">ARENA CHAMPION!</h2>
+    <div class="score" id="scoreText">10/10</div>
+    <p id="resultMessage"></p>
+    <p id="resultDetail"></p>
+    <div class="result-actions">
+      <button class="primary" onclick="showScreen('levels')">PLAY AGAIN ↗</button>
+      <button class="small-btn" onclick="showScreen('home')">HOME</button>
+    </div>
+  </div>
+</section>
+</div>
+<footer>AI QUIZ ARENA · THINK SMART. PLAY SMART. DISCOVER AI. <br> Made for curious minds ✨</footer>
 
 <script>
-const levels = [
-[
-["What does AI stand for?",["Artificial Intelligence","Amazing Internet","Automatic Ice","Animal Island"],0,"AI means Artificial Intelligence."],
-["Which device can follow instructions?",["A pillow","A robot","A banana","A shoe"],1,"Robots can be programmed to perform tasks."],
-["Which is a voice assistant?",["A spoon","A pencil","Siri","A chair"],2,"Siri is a voice assistant that uses AI."],
-["What can AI help recognise?",["Only colours of walls","Only books","Only shoes","Pictures of animals"],3,"AI can be trained to identify animals in pictures."],
-["Can AI make mistakes?",["Yes","Never","Only on Sundays","Only when switched off"],0,"AI can sometimes give incorrect answers."],
-["Which is a computer?",["A sandwich","A laptop","A tree","A ball"],1,"A laptop is a computer."],
-["What should you keep private online?",["Your favourite colour","A drawing","Your password","A cartoon"],2,"Passwords should be kept secret."],
-["What can a robot use to detect things?",["A sandwich","A hat","A book","A sensor"],3,"Sensors help robots detect their surroundings."],
-["Can AI help people learn?",["Yes","Never","Only robots can learn","Only while sleeping"],0,"AI tools can help explain and practise topics."],
-["What should you do if AI gives a strange answer?",["Believe everything","Ask a trusted adult or check it","Share it immediately","Ignore all rules"],1,"Check surprising information with a trusted source."]
-],
-[
-["What is machine learning?",["A type of lunch","A computer screen","Learning patterns from data","A printer"],2,"Machine learning uses data to find patterns."],
-["What does a chatbot do?",["Wash clothes","Charge phones","Build every house","Communicate through conversation"],3,"Chatbots respond to messages and questions."],
-["What is training data?",["Examples used to teach an AI model","A sports uniform","A computer cable","A video game controller"],0,"Training data provides examples for a model to learn from."],
-["Why can an AI answer be wrong?",["It is always joking","Its data or reasoning may be imperfect","It is secretly human","It knows everything"],1,"AI systems have limitations and can make errors."],
-["What is an algorithm?",["A robot's name","A screen colour","A set of steps for solving a task","A computer desk"],2,"Algorithms describe steps for solving problems."],
-["What is a good password habit?",["Share it with everyone","Write it on a public wall","Use your name only","Keep it private and hard to guess"],3,"Strong passwords help protect accounts."],
-["What can image-recognition AI do?",["Identify objects in images","Make water disappear","Guarantee every fact","Replace electricity"],0,"Image recognition identifies visual patterns."],
-["What is a deepfake?",["A type of keyboard","AI-generated or altered media that can look real","A school subject","A computer battery"],1,"Deepfakes can imitate real people or events."],
-["Why check AI-generated facts?",["AI never answers","Checking is impossible","AI can produce inaccurate information","Every answer is an opinion"],2,"Verify important claims with reliable sources."],
-["What is a responsible use of AI?",["Copy everything without learning","Share private data","Pretend AI errors are facts","Check its work and respect privacy"],3,"Responsible use includes critical thinking and privacy."]
-],
-[
-["What is a neural network loosely inspired by?",["Connections between biological neurons","A computer monitor","A filing cabinet","A keyboard layout"],0,"Artificial neural networks use interconnected computational units."],
-["What is a model's training phase?",["Deleting the internet","Adjusting its parameters using data","Turning off the computer","Printing its source code"],1,"Training adjusts model parameters to learn patterns."],
-["What is overfitting?",["Learning nothing at all","Making a computer heavier","Fitting training examples too closely and generalising poorly","Making a screen brighter"],2,"Overfit models often perform poorly on new data."],
-["What is generative AI designed to do?",["Only sort files","Only calculate time","Only store passwords","Generate content such as text or images"],3,"Generative AI can create new content."],
-["What is algorithmic bias?",["Systematic unfairness in a system's outcomes","A type of cable","A screen resolution","A file extension"],0,"Bias can lead to unfair outcomes for different groups."],
-["What is a hallucination in generative AI?",["A computer overheating","An answer that sounds plausible but is false","A software update","A faster processor"],1,"AI hallucinations are generated claims that may be inaccurate."],
-["What is a dataset?",["A robot arm","A programming language only","A collection of data","A network cable"],2,"Datasets organise examples for analysis or model training."],
-["Why use a test dataset?",["To decorate a screen","To increase file size","To replace training entirely","To evaluate performance on unseen examples"],3,"Held-out test data helps evaluate generalisation."],
-["What is natural language processing?",["Technology for working with human language","A computer battery","A type of monitor","A storage device"],0,"NLP supports tasks involving text and language."],
-["What helps make AI more trustworthy?",["Never checking outputs","Evaluation, transparency and human oversight","Hiding every limitation","Removing all testing"],1,"Testing and oversight help identify errors and risks."]
-],
-[
-["What is a large language model trained to do?",["Predict and generate language from learned patterns","Physically manufacture chips","Guarantee every claim","Replace all databases"],0,"Language models learn statistical patterns in language."],
-["What is a parameter in a neural network?",["A computer desk","A setting or learned value in the model","A network password","A display cable"],1,"Parameters are values adjusted during training."],
-["What does a model's context window describe?",["The screen's physical size","The age of its user","The information it can process in one context","The computer's room temperature"],2,"A context window limits the tokens considered together."],
-["What is a precision-recall trade-off about?",["Screen brightness","Battery size","Internet speed only","Balancing different kinds of prediction errors"],3,"Precision and recall measure different aspects of prediction performance."],
-["What is data leakage in model evaluation?",["A damaged keyboard","Information improperly revealing evaluation targets during training","A weak Wi-Fi signal","A monitor defect"],1,"Leakage can make evaluation results misleadingly optimistic."],
-["Why do developers use regularisation?",["To reduce overfitting","To remove every training example","To guarantee perfect accuracy","To make models conscious"],0,"Regularisation can discourage overly complex fits."],
-["What is multimodal AI?",["AI that uses only one fixed number","AI without any inputs","AI that can work with multiple data types","AI that runs only on paper"],2,"Multimodal systems can process combinations such as text and images."],
-["What does inference mean in machine learning?",["Manufacturing a processor","Collecting a school uniform","Deleting a dataset","Using a trained model to produce an output"],3,"Inference uses a trained model to generate predictions or outputs."],
-["Why is a representative dataset important?",["It helps a model work across relevant real-world cases","It guarantees no mistakes","It eliminates every privacy risk","It makes evaluation unnecessary"],0,"Representative data can improve performance across intended populations."],
-["What is an important AI governance practice?",["Never audit systems","Assess risks and monitor performance","Hide known failures","Deploy without testing"],1,"Risk assessment and ongoing monitoring support responsible deployment."]
-]
-];
+const levels = {
+junior: {
+ name:"JUNIOR AI EXPLORERS",
+ questions:[
+  ["Which device can understand and respond to spoken commands?",["A television remote","A voice assistant","A pencil","A wall clock"],1,"Voice assistants use AI to recognise speech and respond to requests."],
+  ["You unlock your phone by showing your face. Which technology may be helping?",["Facial recognition","A calculator","A printer","A flashlight"],0,"Facial recognition analyses facial features to identify or verify a person."],
+  ["Which of these is an example of AI in everyday life?",["A wooden chair","A smart voice assistant","A paper notebook","A regular spoon"],1,"Smart assistants use AI to understand spoken requests."],
+  ["A computer sees many pictures of cats and learns to recognise cats. What is happening?",["Machine learning","Painting","Printing","Charging"],0,"Machine learning helps computers find patterns from examples."],
+  ["Which one is a robot?",["A flower","A machine that can sense and perform tasks","A glass of water","A school bag"],1,"Robots are machines designed to carry out tasks, often using sensors and control systems."],
+  ["When you watch videos online, the app suggests similar videos. What may be helping?",["A recommendation system","A washing machine","A paper map","A battery"],0,"Recommendation systems use information about your interests to suggest content."],
+  ["Can AI make mistakes?",["No, never","Yes, it can","Only at night","Only when offline"],1,"AI systems can make errors, so people should check important information."],
+  ["Which item can help a robot detect an obstacle?",["A sensor","A sticker","A notebook","A spoon"],0,"Sensors help robots detect objects and changes around them."],
+  ["What should you do if an AI gives you a strange answer?",["Believe it immediately","Check with a trusted adult or reliable source","Share it without checking","Ignore all other information"],1,"AI answers should be checked, especially when something seems incorrect."],
+  ["Which task is AI especially useful for?",["Finding patterns in lots of pictures","Growing naturally like a tree","Feeling hungry","Sleeping"],0,"AI can analyse large collections of images and identify patterns."]
+ ]},
+middle: {
+ name:"INTERMEDIATE AI CHALLENGE",
+ questions:[
+  ["A music app suggests songs similar to those you enjoy. Which AI application is involved?",["Recommendation system","Word processor","Operating system","Spreadsheet"],0,"Recommendation systems analyse preferences and suggest relevant content."],
+  ["A model is trained using thousands of labelled dog and cat pictures. What is the labelled information?",["Training data","Computer hardware","Screen resolution","Internet speed"],0,"Training data provides examples from which a model learns patterns."],
+  ["Which example best demonstrates computer vision?",["Recognising objects in a photograph","Typing a paragraph","Playing a recorded song","Saving a file"],0,"Computer vision enables computers to interpret images and videos."],
+  ["Why should an AI system be trained with diverse examples?",["To improve performance across different situations","To make the screen brighter","To reduce the number of users","To remove all data"],0,"Diverse training examples can help reduce gaps in performance across different groups and conditions."],
+  ["A chatbot gives a confident but incorrect answer. What is this often called?",["Hallucination","Encryption","Compression","Animation"],0,"An AI hallucination is generated information that is false or unsupported but presented as if it were factual."],
+  ["A school uses AI to predict which students may need extra academic support. What should be considered?",["Fairness and student privacy","Only the colour of the software","The computer brand alone","The size of the keyboard"],0,"AI used in education should protect student information and avoid unfair outcomes."],
+  ["Which is an example of supervised learning?",["Learning from examples with correct labels","Learning without any data","Randomly deleting files","Displaying a photograph"],0,"Supervised learning uses labelled examples to learn relationships between inputs and outputs."],
+  ["Why is a deepfake potentially harmful?",["It can make fabricated media appear authentic","It always improves image quality","It prevents online fraud","It automatically verifies identity"],0,"Deepfakes can imitate people and spread misleading audio or video."],
+  ["A weather app analyses past observations to estimate tomorrow's rainfall. What is it doing?",["Prediction","Translation","Formatting","Printing"],0,"Prediction models use patterns in available data to estimate future outcomes."],
+  ["Which statement about AI is most accurate?",["AI can assist people but needs human oversight","AI is always correct","AI understands everything like a human","AI never needs data"],0,"AI can support decisions, but its outputs and limitations need human evaluation."]
+ ]},
+high: {
+ name:"ADVANCED AI CHALLENGE",
+ questions:[
+  ["What is the primary purpose of a training dataset in machine learning?",["To provide examples for learning patterns","To store only the final predictions","To replace computer hardware","To display the user interface"],0,"A training dataset provides examples used to adjust a model's parameters."],
+  ["An AI model performs well on training data but poorly on unseen data. What is this called?",["Overfitting","Underfitting","Encryption","Clustering"],0,"Overfitting occurs when a model learns training-specific details and fails to generalise."],
+  ["Which technique is commonly used to protect sensitive information during data transmission?",["Encryption","Image recognition","Clustering","Data visualisation"],0,"Encryption converts information into a protected form that requires the appropriate key to read."],
+  ["What does natural language processing (NLP) enable computers to do?",["Process and analyse human language","Increase screen brightness","Repair hardware","Generate electricity"],0,"NLP focuses on enabling computers to process, interpret and generate human language."],
+  ["An AI recruitment system disadvantages applicants from a particular group. What is the main concern?",["Algorithmic bias","Image resolution","Network bandwidth","File compression"],0,"Algorithmic bias can lead to unfair outcomes for particular groups."],
+  ["Which approach helps evaluate whether a machine-learning model generalises?",["Testing it on unseen data","Testing only on its training examples","Increasing font size","Removing all test examples"],0,"A separate test dataset helps estimate performance on data not used for training."],
+  ["What is a neural network inspired by?",["The interconnected structure of biological neurons","The structure of a keyboard","The design of a printer","The layout of a spreadsheet"],0,"Artificial neural networks use interconnected computational units loosely inspired by biological neurons."],
+  ["Why is explainable AI important in high-stakes decisions?",["It helps people understand the basis of model outputs","It guarantees perfect accuracy","It removes the need for data","It makes every model smaller"],0,"Explainability can support scrutiny, accountability and informed human oversight."],
+  ["Which of these is a generative AI task?",["Creating an original image from a text prompt","Sorting files alphabetically","Measuring screen size","Turning off a computer"],0,"Generative AI can create new content such as text, images, audio and code."],
+  ["A facial recognition system has different error rates across demographic groups. What should developers do?",["Audit the data and evaluate performance across groups","Ignore the difference","Remove all human review","Assume the system is fair"],0,"Performance audits can reveal disparities and guide improvements in fairness."]
+ ]},
+senior: {
+ name:"EXPERT AI CHALLENGE",
+ questions:[
+  ["Which learning paradigm uses rewards and penalties to guide an agent's actions?",["Reinforcement learning","Supervised learning","Unsupervised learning","Transfer learning"],0,"Reinforcement learning trains an agent through interactions and reward signals."],
+  ["What is the role of an activation function in a neural network?",["Introduce non-linearity","Store the training dataset","Encrypt every input","Measure internet speed"],0,"Activation functions enable neural networks to learn complex, non-linear relationships."],
+  ["What is a key characteristic of unsupervised learning?",["It identifies patterns in data without labelled target outputs","It requires every input to have a correct label","It uses rewards for every action","It only works with images"],0,"Unsupervised learning discovers structure or patterns in data without labelled target outputs."],
+  ["In a classification model, what does a false positive represent?",["Predicting a positive result when the actual result is negative","Predicting a negative result when the actual result is positive","Correctly predicting a positive result","Correctly predicting a negative result"],0,"A false positive is an incorrect positive prediction."],
+  ["What is the main purpose of regularisation in machine learning?",["To reduce overfitting","To increase the number of labels","To eliminate all training data","To guarantee perfect accuracy"],0,"Regularisation discourages overly complex models and can improve generalisation."],
+  ["Which architecture is especially associated with the original Transformer model?",["Self-attention","Decision trees","K-nearest neighbours","Linear regression"],0,"The Transformer architecture relies heavily on attention mechanisms to process relationships between tokens."],
+  ["What does the term 'token' commonly refer to in a language model?",["A unit of text processed by the model","A computer's power supply","A type of monitor","A network cable"],0,"Tokens may represent words, parts of words, punctuation or other text units."],
+  ["Why can a dataset with poor representation produce unfair AI outcomes?",["The model may learn patterns that do not adequately represent all groups","It always increases model accuracy","It removes the need for evaluation","It guarantees equal predictions"],0,"Underrepresented groups may receive poorer predictions if their examples are insufficient or unrepresentative."],
+  ["What is transfer learning?",["Reusing knowledge from a model trained on one task for another related task","Deleting a trained model","Moving files between folders","Training without any previous data"],0,"Transfer learning adapts previously learned representations to a new but related task."],
+  ["Why should high-stakes AI decisions include human oversight?",["To enable accountability, context and review of consequential decisions","To guarantee that AI never makes errors","To remove the need for testing","To prevent models from using data"],0,"Human oversight supports accountability and allows decisions to be challenged or corrected."]
+ ]}
+};
 
-let questions = [];
-let current = 0;
+let currentQuestions = [];
+let currentIndex = 0;
 let score = 0;
-let locked = false;
+let answered = false;
+let currentLevel = "";
 
-function show(id) {
-  ["home","game","result"].forEach(name =>
-    document.getElementById(name).classList.toggle("hidden",name!==id)
-  );
+function showScreen(id) {
+ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function startQuiz() {
-  const level = Number(document.getElementById("grade").value);
-  questions = levels[level];
-  current = 0;
-  score = 0;
-  locked = false;
-  document.getElementById("score").textContent = score;
-  show("game");
-  renderQuestion();
+function startQuiz(level) {
+ currentLevel = level;
+ currentQuestions = levels[level].questions;
+ currentIndex = 0;
+ score = 0;
+ document.getElementById("levelName").textContent = levels[level].name;
+ showScreen("quiz");
+ renderQuestion();
 }
 
 function renderQuestion() {
-  locked = false;
-  const item = questions[current];
-  document.getElementById("count").textContent =
-    `QUESTION ${current+1} / 10`;
-  document.getElementById("progress").style.width =
-    `${current*10}%`;
-  document.getElementById("category").textContent = "AI KNOWLEDGE";
-  document.getElementById("question").textContent = item[0];
-  document.getElementById("feedback").textContent = "";
-  document.getElementById("next").classList.add("hidden");
-
-  const area = document.getElementById("answers");
-  area.replaceChildren();
-  item[1].forEach((answer,index) => {
-    const button = document.createElement("button");
-    button.className = "answer";
-    button.textContent = `${String.fromCharCode(65+index)}. ${answer}`;
-    button.onclick = () => chooseAnswer(index);
-    area.appendChild(button);
-  });
+ answered = false;
+ const q = currentQuestions[currentIndex];
+ document.getElementById("questionCount").textContent =
+  `QUESTION ${currentIndex+1} / ${currentQuestions.length}`;
+ document.getElementById("progressBar").style.width =
+  `${(currentIndex/currentQuestions.length)*100}%`;
+ document.getElementById("questionText").textContent = q[0];
+ const options = document.getElementById("options");
+ options.innerHTML = "";
+ q[1].forEach((option,index)=>{
+  const btn = document.createElement("button");
+  btn.className = "option";
+  btn.textContent = String.fromCharCode(65+index)+". "+option;
+  btn.onclick = ()=>selectAnswer(index);
+  options.appendChild(btn);
+ });
+ const feedback = document.getElementById("feedback");
+ feedback.className = "feedback";
+ feedback.textContent = "";
+ document.getElementById("nextBtn").style.display = "none";
 }
 
-function chooseAnswer(index) {
-  if (locked) return;
-  locked = true;
-  const item = questions[current];
-  document.querySelectorAll(".answer").forEach((button,i) => {
-    button.disabled = true;
-    if (i === item[2]) button.classList.add("correct");
-    if (i === index && i !== item[2]) button.classList.add("wrong");
-  });
-
-  const feedback = document.getElementById("feedback");
-  if (index === item[2]) {
-    score++;
-    feedback.textContent = "✅ Correct! " + item[3];
-  } else {
-    feedback.textContent = "❌ Not quite! " + item[3];
-  }
-  document.getElementById("score").textContent = score;
-  document.getElementById("progress").style.width =
-    `${(current+1)*10}%`;
-  document.getElementById("next").textContent =
-    current === 9 ? "SEE MY RESULTS 🏆" : "NEXT QUESTION →";
-  document.getElementById("next").classList.remove("hidden");
+function selectAnswer(index) {
+ if(answered) return;
+ answered = true;
+ const q = currentQuestions[currentIndex];
+ const correct = q[2];
+ const buttons = document.querySelectorAll(".option");
+ buttons.forEach((btn,i)=>{
+  btn.disabled = true;
+  if(i===correct) btn.classList.add("correct");
+  if(i===index && i!==correct) btn.classList.add("wrong");
+ });
+ const feedback = document.getElementById("feedback");
+ const isCorrect = index===correct;
+ if(isCorrect) score++;
+ feedback.className = "feedback show "+(isCorrect?"good":"bad");
+ feedback.innerHTML = `<strong>${isCorrect?"✓ Excellent!":"✕ Not quite!"}</strong><br>${q[3]}`;
+ document.getElementById("progressBar").style.width =
+  `${((currentIndex+1)/currentQuestions.length)*100}%`;
+ const next = document.getElementById("nextBtn");
+ next.style.display = "block";
+ next.textContent = currentIndex===currentQuestions.length-1?"VIEW RESULTS →":"NEXT QUESTION →";
 }
 
 function nextQuestion() {
-  if (!locked) return;
-  current++;
-  if (current < 10) renderQuestion();
-  else showResults();
+ if(!answered) return;
+ currentIndex++;
+ if(currentIndex<currentQuestions.length) renderQuestion();
+ else showResults();
 }
 
 function showResults() {
-  show("result");
-  document.getElementById("finalScore").textContent = `${score}/10`;
-  if (score >= 8) {
-    document.getElementById("resultIcon").textContent = "🏆🎉";
-    document.getElementById("resultTitle").textContent =
-      "YOU WON, AI CHAMPION!";
-    document.getElementById("message").textContent =
-      "You're an AI superstar! 🌟 Amazing job, genius! Keep shining!";
-  } else {
-    document.getElementById("resultIcon").textContent = "🤖💪";
-    document.getElementById("resultTitle").textContent =
-      "BETTER LUCK NEXT TIME!";
-    document.getElementById("message").textContent =
-      `Oops! You scored ${score}/10. Keep learning, keep trying, and come back stronger! 🚀 You've got this!`;
-  }
+ showScreen("result");
+ const won = score>=8;
+ document.getElementById("resultIcon").textContent = won?"🏆":"💪";
+ document.getElementById("resultTitle").textContent = won?"ARENA CHAMPION!":"KEEP LEVELING UP!";
+ document.getElementById("scoreText").textContent = `${score}/10`;
+ document.getElementById("resultMessage").textContent = won
+  ?"Outstanding! You've conquered the AI Quiz Arena. Keep exploring and learning!"
+  :"Great effort! Every challenge makes you smarter. Learn from your answers and try again!";
+ document.getElementById("resultDetail").textContent =
+  `${score} correct answers · ${10-score} incorrect answers · ${Math.round(score*10)}% score`;
+ if(won) celebrate();
 }
 
-function goHome() { show("home"); }
+function leaveQuiz() {
+ if(confirm("Are you sure you want to leave this quiz? Your current score will be lost.")) showScreen("levels");
+}
+
+function celebrate() {
+ const colors=["#a855f7","#22d3ee","#4ade80","#facc15","#fb7185"];
+ for(let i=0;i<90;i++){
+  const el=document.createElement("div");
+  el.className="confetti";
+  el.style.left=Math.random()*100+"vw";
+  el.style.background=colors[Math.floor(Math.random()*colors.length)];
+  el.style.animationDelay=Math.random()*1.5+"s";
+  el.style.animationDuration=(2+Math.random()*2)+"s";
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),4500);
+ }
+}
 </script>
 </body>
 </html>
